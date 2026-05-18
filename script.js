@@ -1,4 +1,7 @@
 const universities = ['IE University','Universidad Complutense de Madrid','Universidad Carlos III de Madrid','Universidad Autónoma de Madrid','Universidad Politécnica de Madrid','Universidad Europea','Universidad Francisco de Vitoria','ESIC','ESADE','IESE','Universidad de Navarra'];
+const universities = [
+  'IE University','Universidad Complutense de Madrid','Universidad Carlos III de Madrid','Universidad Autónoma de Madrid','Universidad Politécnica de Madrid','Universidad Europea','Universidad Francisco de Vitoria','ESIC','ESADE','IESE','Universidad de Navarra'
+];
 const activeCampuses = new Set(['IE University','Universidad Carlos III de Madrid','Universidad Complutense de Madrid','Universidad Europea','ESIC']);
 
 const list = document.getElementById('universities');
@@ -9,6 +12,13 @@ select.innerHTML = '<option value="">Universidades populares</option>';
 universities.forEach((u) => {
   const dOption = document.createElement('option'); dOption.value = u; list.appendChild(dOption);
   const sOption = document.createElement('option'); sOption.value = u; sOption.textContent = u; select.appendChild(sOption);
+
+select.innerHTML = '<option value="">Universidades populares</option>';
+universities.forEach((u) => {
+  const option = document.createElement('option');
+  option.value = u;
+  list.appendChild(option.cloneNode(true));
+  select.appendChild(option);
 });
 
 function checkCoverage(name) {
@@ -17,6 +27,12 @@ function checkCoverage(name) {
     ? 'Ya operamos aquí. Puedes reservar tu recogida.'
     : 'Todavía no operamos aquí, pero déjanos tus datos y te avisaremos pronto.';
 }
+  const available = activeCampuses.has(name.trim());
+  statusEl.textContent = available
+    ? 'Ya operamos aquí. Puedes reservar tu recogida.'
+    : 'Todavía no operamos aquí, pero déjanos tus datos y te avisaremos pronto.';
+}
+
 input.addEventListener('input', (e) => checkCoverage(e.target.value));
 select.addEventListener('change', (e) => { input.value = e.target.value; checkCoverage(e.target.value); });
 
@@ -33,3 +49,10 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('in'); });
 }, { threshold: 0.12 });
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  if (!form.checkValidity()) {
+    result.textContent = 'Revisa los campos obligatorios antes de enviar.';
+    return;
+  }
+  result.textContent = 'Gracias. Hemos recibido tu solicitud y te contactaremos pronto.';
+  form.reset();
+});
