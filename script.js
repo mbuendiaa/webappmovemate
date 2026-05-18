@@ -1,3 +1,4 @@
+const universities = ['IE University','Universidad Complutense de Madrid','Universidad Carlos III de Madrid','Universidad Autónoma de Madrid','Universidad Politécnica de Madrid','Universidad Europea','Universidad Francisco de Vitoria','ESIC','ESADE','IESE','Universidad de Navarra'];
 const universities = [
   'IE University','Universidad Complutense de Madrid','Universidad Carlos III de Madrid','Universidad Autónoma de Madrid','Universidad Politécnica de Madrid','Universidad Europea','Universidad Francisco de Vitoria','ESIC','ESADE','IESE','Universidad de Navarra'
 ];
@@ -7,6 +8,10 @@ const list = document.getElementById('universities');
 const select = document.getElementById('university-select');
 const input = document.getElementById('university-input');
 const statusEl = document.getElementById('coverage-status');
+select.innerHTML = '<option value="">Universidades populares</option>';
+universities.forEach((u) => {
+  const dOption = document.createElement('option'); dOption.value = u; list.appendChild(dOption);
+  const sOption = document.createElement('option'); sOption.value = u; sOption.textContent = u; select.appendChild(sOption);
 
 select.innerHTML = '<option value="">Universidades populares</option>';
 universities.forEach((u) => {
@@ -18,6 +23,10 @@ universities.forEach((u) => {
 
 function checkCoverage(name) {
   if (!name) return;
+  statusEl.textContent = activeCampuses.has(name.trim())
+    ? 'Ya operamos aquí. Puedes reservar tu recogida.'
+    : 'Todavía no operamos aquí, pero déjanos tus datos y te avisaremos pronto.';
+}
   const available = activeCampuses.has(name.trim());
   statusEl.textContent = available
     ? 'Ya operamos aquí. Puedes reservar tu recogida.'
@@ -31,6 +40,15 @@ const form = document.getElementById('lead-form');
 const result = document.getElementById('form-result');
 form.addEventListener('submit', (e) => {
   e.preventDefault();
+  if (!form.checkValidity()) { result.textContent = 'Revisa los campos obligatorios antes de enviar.'; return; }
+  result.textContent = 'Gracias. Hemos recibido tu solicitud y te contactaremos pronto.';
+  form.reset();
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => { if (entry.isIntersecting) entry.target.classList.add('in'); });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
   if (!form.checkValidity()) {
     result.textContent = 'Revisa los campos obligatorios antes de enviar.';
     return;
